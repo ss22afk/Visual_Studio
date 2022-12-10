@@ -1,0 +1,23 @@
+# import a packeges from different modules
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import stat as st
+import os # This module use fethcing current directory and create or removeing a directory
+
+'"Using os Module fetching a current directory path and CSV file path"'
+#Current directory path
+currnet_directory_path = os.getcwd()
+print('Current directory path: ', currnet_directory_path)
+
+# Change direcotry from Visual_Studio dir to csvFiles 
+os.chdir('csvFiles')
+csv_File_path = os.getcwd()
+
+# Change to previous directory
+os.chdir('..')
+print('csvFiles direcotry path: ', csv_File_path)
+
+def read_File(filename):
+    dataFrame = pd.read_csv(filename)
+    return dataFrame
