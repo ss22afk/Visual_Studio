@@ -41,6 +41,7 @@ def read_File(filename):
 # Calling a read_File function with filename as argument and assing it to two different datafram
 orignal_ARBL_dataframe,t_ARBL_dataframe = read_File('API_AG.LND.ARBL.ZS_DS2_en_csv_v2_4537687.csv')
 orignal_FRST_Datframe, t_FRST_dataframe= read_File('API_AG.LND.FRST.ZS_DS2_en_csv_v2_4701080.csv')
+
 print('Orignal Arable land (% of land area)',orignal_ARBL_dataframe.head(5))
 print('Structured Arable land (% of land area)',t_ARBL_dataframe.head(5))
 print('Orignal Forest area (% of land area)',orignal_ARBL_dataframe.head(5))
@@ -49,3 +50,18 @@ print('Structured Forest area (% of land area)',t_ARBL_dataframe.head(5))
 # Merge a dataset
 merege_dataframe = pd.merge(t_ARBL_dataframe,t_FRST_dataframe)
 print('Merge dataset: ',merege_dataframe.head(10))
+
+# Shape tell a diamention of dataset
+print('Diamention: ',merege_dataframe.shape)
+
+# Description of data in the dataframe
+print('Discription: ', merege_dataframe.describe())
+
+# Get summary of dataframe
+print('Summary of dataframe: ',merege_dataframe.info())
+
+# Count NaN vlaue in dataframe
+print('Total Null vlaue in dataframe: ' ,merege_dataframe.isna().sum())
+
+# Drop NaN value from datframe
+print('Drop null value clean dataframe: ',merege_dataframe.dropna())
