@@ -19,5 +19,33 @@ os.chdir('..')
 print('csvFiles direcotry path: ', csv_File_path)
 
 def read_File(filename):
-    dataFrame = pd.read_csv(filename)
-    return dataFrame
+    '''
+        This function is use for read file from "csvFiles" direcotry.After a reading file drop column and processed dataset 
+        into well structured formate with header and returning a two data frame: orignal_data and t_dataframe
+        orignal_data: This dataframe is return a data from a daset file.
+        t_dataframe: This dataframe retruns a specific columns like year, and Country with a values.
+        value_Name_indicator: Name of indicator from a dataset.
+        indicator_Code: indicator code from a dataset.
+    '''
+    dataframe = pd.read_csv(csv_File_path  +'/'+ filename)
+    orignal_data = dataframe
+    value_Name_indicator = dataframe['Indicator Name'][0]
+    indicator_Code  = dataframe['Indicator Code'][0]
+    dataframe = dataframe.drop(['Country Code', 'Indicator Name','Indicator Code'], axis = 1)
+    years = list(dataframe.columns)
+
+    # Reshaping a data unpivots dataframe from wide format to long format
+    t_dataframe = pd.melt(dataframe, id_vars=['Country Name'], value_vars=years, var_name='Years', value_name=value_Name_indicator)
+    return orignal_data, t_dataframe
+
+# Calling a read_File function with filename as argument and assing it to two different datafram
+orignal_ARBL_dataframe,t_ARBL_dataframe = read_File('API_AG.LND.ARBL.ZS_DS2_en_csv_v2_4537687.csv')
+orignal_FRST_Datframe, t_FRST_dataframe= read_File('API_AG.LND.FRST.ZS_DS2_en_csv_v2_4701080.csv')
+print('Orignal Arable land (% of land area)',orignal_ARBL_dataframe.head(5))
+print('Structured Arable land (% of land area)',t_ARBL_dataframe.head(5))
+print('Orignal Forest area (% of land area)',orignal_ARBL_dataframe.head(5))
+print('Structured Forest area (% of land area)',t_ARBL_dataframe.head(5))
+
+# Merge a dataset
+merege_dataframe = pd.merge(t_ARBL_dataframe,t_FRST_dataframe)
+print('Merge dataset: ',merege_dataframe.head(10))
