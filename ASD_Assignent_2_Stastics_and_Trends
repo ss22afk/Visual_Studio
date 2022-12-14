@@ -1,4 +1,4 @@
-# import a packeges from different modules
+# import a packeges from different module
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
