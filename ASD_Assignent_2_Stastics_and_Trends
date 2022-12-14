@@ -1,8 +1,12 @@
 # import a packeges from different modules
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 import numpy as np
-import stat as st
+import scipy.stats as st
+from scipy.stats import norm
+import warnings
+warnings.filterwarnings('ignore')
 import os # This module use fethcing current directory and create or removeing a directory
 
 '"Using os Module fetching a current directory path and CSV file path"'
@@ -65,3 +69,103 @@ print('Total Null vlaue in dataframe: ' ,merege_dataframe.isna().sum())
 
 # Drop NaN value from datframe
 print('Drop null value clean dataframe: ',merege_dataframe.dropna())
+
+# Drop NaN value from datframe and assign to new dataframe
+rmna_mrg_dataframe = merege_dataframe.dropna()
+
+# Re-counting for NaN value in datafram
+print('Re-Checking after remove NaN: ', rmna_mrg_dataframe.isna().sum())
+
+'''
+Function for get stastical propertice
+dist_dataframe: Dataframe column name as a argument.
+'''
+def stat_Properties(dist_dataframe_col_name):
+    '" Print Moments of distribution dist_dataframe. Using numpy and spicy.stats "'
+    print('Average:        ', np.average(dist_dataframe_col_name))
+    print('std deviations: ', np.std(dist_dataframe_col_name))
+    print('skewness:       ', st.skew(dist_dataframe_col_name))
+    print('kurtosis:       ', st.kurtosis(dist_dataframe_col_name))
+    return
+
+'''
+Stastics for Arable land area and forest area. If values of arable land and forest land are around 0 or
+nagative value it's return a NaN vlaue.
+'''
+print('Stastical properites for Arable land (% of land area):')
+stat_Properties(rmna_mrg_dataframe['Arable land (% of land area)'])
+print()
+print('Stastical properties for Forest area (% of land area): ')
+stat_Properties(rmna_mrg_dataframe['Forest area (% of land area)'])
+
+# Data Type of merged dataframe 
+print('Data Type:\n', rmna_mrg_dataframe.dtypes)
+
+# Fileter asian country from a merged dataframe to process
+asian_Country_List = ['India','Pakistan','Nepal', 'China','Singapore','Japan','Philippines','Turkey','Malaysia']
+print('Asian Country List: ', asian_Country_List)
+
+# Condition for data between 2000 and 2010
+df_2000_to_2010 = rmna_mrg_dataframe[(rmna_mrg_dataframe.Years >= '2000') & (rmna_mrg_dataframe.Years <= '2010')]
+print('data for 10 yars: ',df_2000_to_2010.head())
+
+# Get asian country from a list and assign it to new data frame
+asian_Country_list_df = df_2000_to_2010[df_2000_to_2010['Country Name'].isin(asian_Country_List)]
+
+# Group of asian countries by "Country Name" column and calculate meadian 
+grp_df_asian_countries = asian_Country_list_df.groupby(['Country Name'], as_index = False).max()
+print('group of asian Countries: ', grp_df_asian_countries.head(20))
+
+'''
+Using a line graph to represent the largest proportion of an Asian country's land area
+'''
+plt.figure(figsize=(8,5))
+plt.plot(grp_df_asian_countries['Country Name'],grp_df_asian_countries['Arable land (% of land area)'], label='Arable land')
+plt.plot(grp_df_asian_countries['Country Name'],grp_df_asian_countries['Forest area (% of land area)'], label='Forest area')
+plt.legend()
+plt.title('Largest proportion of land area Covered by Asian countries')
+plt.xlabel('Asian Countries')
+plt.ylabel('% of land area')
+plt.savefig('1_line_grap.jpg')
+plt.show()
+
+'''
+Normal distribution over a histogram for arabral land (% of land area) and Forest area (% of land area)
+'''
+def normal_distribution_hist(col_Name,color_Name, number_of_graph):
+    '''
+    This Function is used for ploting a histogram for specific colomn which accept two argument for function column name and color name
+    and calculate a normal distribution and probablity density
+    '''
+    plt.hist(col_Name, bins=50, density=True, alpha=0.6, color=color_Name)
+    mu, std = norm.fit(col_Name)
+    xmin, xmax = plt.xlim()
+    x = np.linspace(xmin, xmax, 200)
+    p = norm.pdf(x, mu, std)
+    plt.plot(x, p, 'k', linewidth=2, label='Normal Distribution')
+    plt.title('Histogram of ' + col_Name.name +": $\mu={:.2f},\ \sigma={:.2f}$".format(mu,std))
+    plt.xlabel(col_Name.name)
+    plt.ylabel('Probablity Density')
+    plt.legend()
+    plt.savefig('{}_histogram.jpg'.format(number_of_graph))
+    plt.show()
+    return
+
+# Histogram of Arable land (% of land area) with normal distribution
+normal_distribution_hist(rmna_mrg_dataframe['Arable land (% of land area)'], 'g',1)
+
+# Histogram of Forest area (% of land area) with normal distribution
+normal_distribution_hist(rmna_mrg_dataframe['Forest area (% of land area)'], 'b',2)
+
+# plot heat map for specific coutries
+plt.figure(figsize=(16,5))
+country_List_df = ['Africa Eastern and Southern','United Kingdom', 'United Arab Emirates','American Samoa', 'Australia', 'Austria','Belgium', 'Canada','United States']
+grp_country_df = rmna_mrg_dataframe[rmna_mrg_dataframe['Country Name'].isin(country_List_df)]
+heatmap_pt = pd.pivot_table(grp_country_df,values='Arable land (% of land area)', index=['Years'], columns='Country Name')
+heatmap_pt.head()
+sns.set()
+sns.heatmap(heatmap_pt, cmap='YlGnBu')
+plt.title('Heatmap of Abral land (% of land area)')
+plt.xticks(rotation=15)
+plt.savefig('heatmap_abral_land.jpg')
+plt.show()
