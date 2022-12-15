@@ -43,7 +43,10 @@ def read_File(filename):
     return orignal_data, t_dataframe
 
 # Calling a read_File function with filename as argument and assing it to two different datafram
+#https://data.worldbank.org/indicator/AG.LND.ARBL.ZS
 orignal_ARBL_dataframe,t_ARBL_dataframe = read_File('API_AG.LND.ARBL.ZS_DS2_en_csv_v2_4537687.csv')
+
+#https://data.worldbank.org/indicator/AG.LND.FRST.ZS
 orignal_FRST_Datframe, t_FRST_dataframe= read_File('API_AG.LND.FRST.ZS_DS2_en_csv_v2_4701080.csv')
 
 print('Orignal Arable land (% of land area)',orignal_ARBL_dataframe.head(5))
