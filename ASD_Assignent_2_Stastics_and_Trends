@@ -1,3 +1,15 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Dec 15 01:22:23 2022
+
+@author: sagar
+"""
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Dec 15 01:22:23 2022
+
+@author: sagar
+"""
 # import a packeges from different module
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -172,3 +184,4 @@ plt.title('Heatmap of Abral land (% of land area)')
 plt.xticks(rotation=15)
 plt.savefig('heatmap_abral_land.jpg')
 plt.show()
+
